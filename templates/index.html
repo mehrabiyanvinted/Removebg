@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Background Removal</title>
+</head>
+<body>
+    <h1>Image Background Removal</h1>
+    <form action="/process" method="POST" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*" required>
+        <button type="submit">Remove Background</button>
+    </form>
+    <div id="result">
+        <!-- Processed image will be displayed here -->
+    </div>
+    <script>
+        document.querySelector('form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const response = await fetch('/process', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const objectURL = URL.createObjectURL(blob);
+                const resultDiv = document.getElementById('result');
+
+                // Create an image element to display the processed image
+                const img = document.createElement('img');
+                img.src = objectURL;
+                img.alt = 'Processed Image';
+
+                // Clear previous results and display the processed image
+                resultDiv.innerHTML = '';
+                resultDiv.appendChild(img);
+            } else {
+                alert('Error processing the image. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>
